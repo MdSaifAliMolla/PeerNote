@@ -1,0 +1,188 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  color: #FFFFFF;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 20px;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  background-color: #145DA0;
+}
+
+.logo {
+  height: 80px;
+  margin-right: auto;
+}
+
+.backButton {
+  height: 50px;
+  padding: 4px 8px;
+  background-color: #0C2D48;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
+  cursor: pointer;
+  margin-right: 35px;
+  margin-top: 15px;
+}
+
+.backButton:hover {
+  background-color: #B1D4E0;
+}
+
+.container {
+  margin-top: 120px;
+  padding: 2rem;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.error {
+  color: #ff6b6b;
+  margin-bottom: 1rem;
+  font-weight: bold;
+}
+
+.tabs {
+  display: flex;
+  border-bottom: 2px solid #145DA0;
+  margin-bottom: 1.5rem;
+}
+
+.tab {
+  padding: 10px 20px;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: #B1D4E0;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.tab.active {
+  color: #FFFFFF;
+  border-bottom: 2px solid #B1D4E0;
+}
+
+.tab:hover:not(.active) {
+  color: #FFFFFF;
+}
+
+.loading {
+  text-align: center;
+  margin-top: 3rem;
+  font-size: 1.2rem;
+  color: #B1D4E0;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #145DA0;
+}
+
+.th {
+  text-align: center;
+  padding: 1rem;
+  border: 1px solid #FFFFFF;
+  background-color: #0C2D48;
+  color: #FFFFFF;
+}
+
+.td {
+  text-align: center;
+  padding: 1rem;
+  border: 1px solid #FFFFFF;
+  background-color: #B1D4E0;
+  color: black;
+}
+
+.btn {
+    padding: 8px 16px;
+    background-color: #2E8BC0;
+    color: white; 
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
+  }
+  
+.btn:hover {
+  background-color: #1D6A96; 
+}
+
+.btnDanger {
+  background-color: #c0392b;
+  color: white;
+}
+
+.btnDanger:hover {
+  background-color: #e74c3c;
+}
+
+.btnWarning {
+  background-color: #f39c12;
+  color: white;
+}
+
+.btnWarning:hover {
+  background-color: #e67e22;
+}
+
+.btnSuccess {
+  background-color: #27ae60;
+  color: white;
+}
+
+.btnSuccess:hover {
+  background-color: #2ecc71;
+}
+
+.btnSmall {
+  padding: 4px 8px;
+  font-size: 0.85rem;
+}
+
+.statusBanned {
+  color: #e74c3c;
+  font-weight: bold;
+}
+
+.statusActive {
+  color: #27ae60;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.statCard {
+  padding: 20px;
+  border: 1px solid #FFFFFF;
+  border-radius: 8px;
+  text-align: center;
+  background-color: #145DA0;
+  color: #FFFFFF;
+}
+
+.statCard h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+  color: #B1D4E0;
+}
+
+.statCard p {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: bold;
+}

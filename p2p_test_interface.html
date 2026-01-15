@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P2P File Sharing Test Interface</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .peer {
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            background: #f9f9f9;
+        }
+        .peer.active {
+            border-color: #4CAF50;
+            background: #e8f5e8;
+        }
+        .peer.inactive {
+            border-color: #f44336;
+            background: #ffeaea;
+        }
+        button {
+            background: #2196F3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #1976D2;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #2196F3);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .file-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+            background: white;
+        }
+        .log {
+            background: #1e1e1e;
+            color: #fff;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .status.active { background: #4CAF50; color: white; }
+        .status.inactive { background: #f44336; color: white; }
+        .transfer-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🚀 P2P File Sharing Test Interface</h1>
+    
+    <div class="container">
+        <h2>Peer Status</h2>
+        <div id="peerStatus"></div>
+    </div>
+
+    <div class="container">
+        <h2>File Operations</h2>
+        <div>
+            <input type="file" id="fileInput" accept="*/*">
+            <input type="text" id="fileId" placeholder="File ID (e.g., test123)">
+            <button onclick="uploadFile()">Upload to Peer 1</button>
+        </div>
+        <div class="progress-bar" id="uploadProgress" style="display: none;">
+            <div class="progress-fill" id="uploadProgressFill"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>P2P Transfer</h2>
+        <div class="transfer-controls">
+            <div>
+                <label>From Peer:</label>
+                <select id="fromPeer">
+                    <option value="4001">Peer 1 (4001)</option>
+                    <option value="4002">Peer 2 (4002)</option>
+                    <option value="4003">Peer 3 (4003)</option>
+                </select>
+            </div>
+            <div>
+                <label>To Peer:</label>
+                <select id="toPeer">
+                    <option value="4002">Peer 2 (4002)</option>
+                    <option value="4003">Peer 3 (4003)</option>
+                    <option value="4001">Peer 1 (4001)</option>
+                </select>
+            </div>
+        </div>
+        <div>
+            <input type="text" id="transferFileId" placeholder="File ID to transfer">
+            <input type="text" id="transferFilename" placeholder="Filename">
+            <button onclick="transferFile()">Transfer File</button>
+        </div>
+        <div class="progress-bar" id="transferProgress" style="display: none;">
+            <div class="progress-fill" id="transferProgressFill"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>File Lists</h2>
+        <button onclick="refreshFileLists()">Refresh All</button>
+        <div id="fileLists"></div>
+    </div>
+
+    <div class="container">
+        <h2>Activity Log</h2>
+        <button onclick="clearLog()">Clear Log</button>
+        <div class="log" id="log"></div>
+    </div>
+
+    <script>
+        const peers = [
+            { name: 'Peer 1 (Aman)', port: 4001, status: 'inactive' },
+            { name: 'Peer 2 (Bina)', port: 4002, status: 'inactive' },
+            { name: 'Peer 3 (Chirag)', port: 4003, status: 'inactive' }
+        ];
+
+        function log(message) {
+            const logDiv = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            logDiv.innerHTML += `[${timestamp}] ${message}\n`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        function clearLog() {
+            document.getElementById('log').innerHTML = '';
+        }
+
+        async function checkPeerStatus() {
+            const statusDiv = document.getElementById('peerStatus');
+            statusDiv.innerHTML = '';
+
+            for (const peer of peers) {
+                try {
+                    const response = await fetch(`http://localhost:${peer.port}/ip`);
+                    if (response.ok) {
+                        peer.status = 'active';
+                        const ip = await response.text();
+                        log(`✅ ${peer.name} is running (IP: ${ip})`);
+                    } else {
+                        peer.status = 'inactive';
+                        log(`❌ ${peer.name} is not responding`);
+                    }
+                } catch (error) {
+                    peer.status = 'inactive';
+                    log(`❌ ${peer.name} is not running - ${error.message}`);
+                }
+
+                const peerDiv = document.createElement('div');
+                peerDiv.className = `peer ${peer.status}`;
+                peerDiv.innerHTML = `
+                    <h3>${peer.name} - Port ${peer.port}</h3>
+                    <span class="status ${peer.status}">${peer.status.toUpperCase()}</span>
+                `;
+                statusDiv.appendChild(peerDiv);
+            }
+        }
+
+        async function refreshFileLists() {
+            const fileListsDiv = document.getElementById('fileLists');
+            fileListsDiv.innerHTML = '';
+
+            for (const peer of peers) {
+                if (peer.status !== 'active') continue;
+
+                try {
+                    const response = await fetch(`http://localhost:${peer.port}/files`);
+                    const data = await response.json();
+                    
+                    const listDiv = document.createElement('div');
+                    listDiv.className = 'peer';
+                    listDiv.innerHTML = `
+                        <h3>${peer.name} Files</h3>
+                        <div class="file-list">
+                            ${data.files.length > 0 ? data.files.map(file => `<div>📄 ${file}</div>`).join('') : '<div>No files</div>'}
+                        </div>
+                    `;
+                    fileListsDiv.appendChild(listDiv);
+                } catch (error) {
+                    log(`❌ Failed to get files from ${peer.name}: ${error.message}`);
+                }
+            }
+        }
+
+        async function uploadFile() {
+            const fileInput = document.getElementById('fileInput');
+            const fileId = document.getElementById('fileId').value;
+            
+            if (!fileInput.files[0]) {
+                log('❌ Please select a file to upload');
+                return;
+            }
+            
+            if (!fileId) {
+                log('❌ Please enter a file ID');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file_id', fileId);
+            formData.append('file', fileInput.files[0]);
+
+            showProgress('upload');
+            log(`📤 Uploading ${fileInput.files[0].name} to Peer 1...`);
+
+            try {
+                const response = await fetch('http://localhost:4001/copy-file', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const result = await response.text();
+                    log(`✅ Upload successful: ${result}`);
+                    refreshFileLists();
+                } else {
+                    const error = await response.text();
+                    log(`❌ Upload failed: ${error}`);
+                }
+            } catch (error) {
+                log(`❌ Upload error: ${error.message}`);
+            } finally {
+                hideProgress('upload');
+            }
+        }
+
+        async function transferFile() {
+            const fromPort = document.getElementById('fromPeer').value;
+            const toPort = document.getElementById('toPeer').value;
+            const fileId = document.getElementById('transferFileId').value;
+            const filename = document.getElementById('transferFilename').value;
+
+            if (!fileId || !filename) {
+                log('❌ Please enter file ID and filename');
+                return;
+            }
+
+            if (fromPort === toPort) {
+                log('❌ Source and destination peers must be different');
+                return;
+            }
+
+            showProgress('transfer');
+            log(`📥 Transferring ${filename} from Peer ${fromPort} to Peer ${toPort}...`);
+
+            try {
+                const response = await fetch(`http://localhost:${toPort}/request`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        id: fileId,
+                        filename: filename,
+                        ip: 'localhost',
+                        port: fromPort
+                    })
+                });
+
+                if (response.ok) {
+                    const result = await response.text();
+                    log(`✅ Transfer successful: ${result}`);
+                    refreshFileLists();
+                } else {
+                    const error = await response.text();
+                    log(`❌ Transfer failed: ${error}`);
+                }
+            } catch (error) {
+                log(`❌ Transfer error: ${error.message}`);
+            } finally {
+                hideProgress('transfer');
+            }
+        }
+
+        function showProgress(type) {
+            const progressBar = document.getElementById(`${type}Progress`);
+            const progressFill = document.getElementById(`${type}ProgressFill`);
+            progressBar.style.display = 'block';
+            progressFill.style.width = '0%';
+            
+            // Simulate progress
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress > 90) progress = 90;
+                progressFill.style.width = progress + '%';
+            }, 200);
+            
+            progressBar.dataset.interval = interval;
+        }
+
+        function hideProgress(type) {
+            const progressBar = document.getElementById(`${type}Progress`);
+            const progressFill = document.getElementById(`${type}ProgressFill`);
+            
+            if (progressBar.dataset.interval) {
+                clearInterval(progressBar.dataset.interval);
+            }
+            
+            progressFill.style.width = '100%';
+            setTimeout(() => {
+                progressBar.style.display = 'none';
+                progressFill.style.width = '0%';
+            }, 500);
+        }
+
+        // Initialize
+        async function init() {
+            log('🚀 Initializing P2P File Sharing Test Interface...');
+            await checkPeerStatus();
+            await refreshFileLists();
+            
+            // Auto-refresh status every 10 seconds
+            setInterval(checkPeerStatus, 10000);
+        }
+
+        // Start the interface
+        init();
+    </script>
+</body>
+</html>
