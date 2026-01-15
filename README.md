@@ -225,7 +225,7 @@ file_peer/
 - **Database Scaling**: Consider PostgreSQL for production
 - **File Storage**: Implement distributed file storage for scalability
 
-## 📊 System Limitations & Design Decisions
+##  System Limitations & Design Decisions
 
 ### Current Limitations
 - **Network Restriction**: Only works within local networks
@@ -301,8 +301,3 @@ cd frontend && npm run dev
 
 Access the application at `http://localhost:5173`
 
----
-
-**Course Project**: CS4675/CS6675 at Georgia Institute of Technology  
-**Architecture**: Hybrid centralized metadata with decentralized file storage  
-**Network**: Local peer-to-peer note sharing platform
