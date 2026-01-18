@@ -2,7 +2,15 @@
 
 A peer-to-peer note sharing platform designed for academic environments, enabling students to share and access educational resources across a local network.
 
-## 🏗️ System Architecture
+<img width="500" height="500" alt="Screenshot (54)" src="https://github.com/user-attachments/assets/ca36797b-76a0-41b8-9430-1763ff25c026" />
+<img  width="500" height="500" alt="Screenshot (55)" src="https://github.com/user-attachments/assets/4c8f454c-3c0b-4223-a814-3dc404425ac9" />
+<img  width="500" height="500" alt="Screenshot (56)" src="https://github.com/user-attachments/assets/1d76e845-2340-489a-ad83-de6d51516fa8" />
+<img  width="500" height="500" alt="Screenshot (57)" src="https://github.com/user-attachments/assets/04203696-ecf0-4285-8f70-400fa1021b78" />
+<img  width="500" height="500" alt="Screenshot (58)" src="https://github.com/user-attachments/assets/1717deca-220d-4cb5-a6bc-12e2e34888af" />
+<img  width="500" height="500" alt="Screenshot (59)" src="https://github.com/user-attachments/assets/8456d939-5f1d-41c0-b84f-a6668f3cdad4" />
+<img  width="500" height="500" alt="Screenshot (61)" src="https://github.com/user-attachments/assets/9d5b41a8-bd70-4081-b075-f35def1603d0" />
+
+## System Architecture
 
 ### Overview
 PeerNotes is a **three-tier distributed system** that combines centralized metadata management with decentralized file storage:
@@ -44,7 +52,7 @@ PeerNotes is a **three-tier distributed system** that combines centralized metad
   - Local file management
   - Network-restricted operations
 
-## 🔄 Data Flow Architecture
+##  Data Flow Architecture
 
 ### Authentication Flow
 ```mermaid
@@ -102,7 +110,7 @@ sequenceDiagram
     end
 ```
 
-## 🗄️ Database Design
+## Database Design
 
 ### Entity Relationships
 ```
@@ -141,7 +149,7 @@ Users (1) ←→ (N) UserReports
 - Peer relationship tracking
 - Voting and reporting capabilities
 
-## 🌐 Network Architecture
+##  Network Architecture
 
 ### Communication Protocols
 - **HTTP/HTTPS**: RESTful API communication
@@ -157,39 +165,6 @@ Users (1) ←→ (N) UserReports
 - **Local Network Only**: Designed for restricted network environments
 - **IP-based Discovery**: Automatic LAN IP detection
 - **Direct P2P**: Files transferred directly between peers
-
-## 🔧 Technical Implementation Details
-
-### Frontend Architecture
-```
-src/
-├── app/
-│   ├── (auth)/          # Authentication pages
-│   └── (app)/           # Main application pages
-├── components/          # Reusable UI components
-├── hooks/              # Custom React hooks
-├── utils/              # Utility functions
-└── styles/             # CSS styling
-```
-
-### Backend Architecture
-```
-backend-node/
-├── controllers/        # Request handlers
-├── models/            # Sequelize models
-├── routes/            # API route definitions
-├── middleware/        # Custom middleware
-├── config/           # Database configuration
-└── migrations/       # Database migrations
-```
-
-### Peer Service Architecture
-```
-file_peer/
-├── server.js          # Main peer service server
-├── uploads/           # Local file storage
-└── package.json       # Dependencies
-```
 
 ## 🔐 Security Features
 
@@ -209,65 +184,6 @@ file_peer/
 - SQL injection prevention via Sequelize ORM
 - CORS configuration for cross-origin requests
 
-## 🚀 Deployment Architecture
-
-### Development Environment
-```bash
-# Three separate processes required:
-1. Central API:    cd backend-node && npm start
-2. Peer Service:   cd file_peer && npm start  
-3. Frontend:       cd frontend && npm run dev
-```
-
-### Production Considerations
-- **Domain Configuration**: Replace hardcoded localhost with production domains
-- **Network Setup**: Ensure all services within same network
-- **Database Scaling**: Consider PostgreSQL for production
-- **File Storage**: Implement distributed file storage for scalability
-
-##  System Limitations & Design Decisions
-
-### Current Limitations
-- **Network Restriction**: Only works within local networks
-- **Single Point of Failure**: Central server dependency for metadata
-- **File Duplication**: Multiple peers may store same file
-- **No Version Control**: No file versioning system
-
-### Design Trade-offs
-- **Centralized Metadata**: Simplifies search and discovery vs fully decentralized
-- **P2P File Transfer**: Reduces central server bandwidth costs
-- **SQLite Database**: Lightweight for development vs production-ready alternatives
-- **Polling vs WebSockets**: Simpler implementation vs real-time efficiency
-
-## 🔮 Future Architecture Enhancements
-
-### Scalability Improvements
-- **Database Migration**: PostgreSQL for production workloads
-- **Load Balancing**: Multiple central server instances
-- **CDN Integration**: Global file distribution
-- **WebSocket Implementation**: Real-time updates
-
-### Feature Enhancements
-- **File Versioning**: Track file revisions and history
-- **Advanced Search**: Full-text search capabilities
-- **Access Control**: Granular permission systems
-- **Analytics**: Usage tracking and insights
-
-## 🛠️ Development Workflow
-
-### Code Organization
-- **Feature Branches**: Isolated development per feature
-- **Modular Architecture**: Clear separation of concerns
-- **TypeScript**: Type safety across frontend
-- **RESTful APIs**: Standardized API design
-
-### Testing Strategy
-- **Unit Tests**: Model and controller testing
-- **Integration Tests**: API endpoint testing
-- **E2E Tests**: Full user journey testing
-- **Network Testing**: P2P transfer validation
-
----
 
 ## 📚 Quick Start Guide
 
